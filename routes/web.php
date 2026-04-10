@@ -22,6 +22,6 @@ Route::get('/', function () {
 Route::prefix('admin/')->name('admin.')->group(function () {
 
     // CATEGORIE ROUTE:
-    Route::get('categorie', [CategorieController::class, 'index'])->name('admin.categorie.home');
+    Route::get('categorie', [CategorieController::class, 'index'])->name('categorie.home');
 
 });
