@@ -23,5 +23,7 @@ Route::prefix('admin/')->name('admin.')->group(function () {
 
     // CATEGORIE ROUTE:
     Route::get('categorie', [CategorieController::class, 'index'])->name('categorie.home');
+    Route::post('categorie', [CategorieController::class, 'store'])->name('categorie.store');
+    Route::delete('categorie/delete/{id}', [CategorieController::class, 'destroy'])->name('categorie.destroy');
 
 });
