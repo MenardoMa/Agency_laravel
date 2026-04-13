@@ -53,6 +53,10 @@ class CategorieFormRequest extends FormRequest
             "nom.required" => "Le nom est obligatoire",
             "nom.min" => "Le nom doit contenir au moins 3 caractères",
             "description.min" => "La description doit contenir au moins 8 caractères",
+
+            "slug.required" => "Le slug est obligatoire",
+            "slug.unique" => "Ce slug existe déjà",
+            "slug.min" => "Le slug doit contenir au moins 3 caractères",
         ];
     }
 }

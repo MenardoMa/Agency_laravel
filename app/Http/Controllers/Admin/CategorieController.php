@@ -31,13 +31,15 @@ class CategorieController extends Controller
         if ($categorie) {
             return response()->json([
                 "status" => true,
-                "message" => "Categorie créér"
+                "message" => "Categorie créér",
+                "categorie" => $categorie,
             ]);
         }
+
         // AU cas ou on a une erreur 
         return response()->json([
             "status" => false,
-            "message" => "Erreur lors de la creation d'une categorie"
+            "message" => "Erreur lors de la creation d'une categorie",
         ]);
     }
 

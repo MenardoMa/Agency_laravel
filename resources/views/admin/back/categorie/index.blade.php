@@ -21,7 +21,7 @@
             </tr>
         </thead>
         <tbody id="table_body">
-            @forelse ($categories as $categorie)
+            @foreach ($categories as $categorie)
                 <tr id="row_{{ $categorie->id }}">
                     <th>{{ $categorie->id }}</th>
                     <td>{{ $categorie->name }}</td>
@@ -34,13 +34,7 @@
                         </form>
                     </td>
                 </tr>
-            @empty
-                <tr>
-                    <td colspan="4" class="text-center">
-                        Vous n'avez pas de categorie
-                    </td>
-                </tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
     {{ $categories->links() }}

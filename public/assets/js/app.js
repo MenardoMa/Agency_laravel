@@ -65,30 +65,68 @@ function formValidate() {
                         .prop("disabled", true);
                 },
                 success: function (response) {
-                    // fermer modal
-                    $("#modal_categorie").modal("hide");
-                    // reset form
-                    form.reset();
-                    $(".form-control").removeClass("is-valid");
-                    btn_save.text(originalText).prop("disabled", false);
-                    Swal.fire({
-                        title: "Crée",
-                        text: "La catégorie a été supprimée.",
-                        icon: "success",
-                    });
+                    if (response.status) {
+                        let categorie = response.categorie;
+                        let tr = `
+                            <tr id="row_${categorie.id}">
+                                <th>${categorie.id}</th>
+                                <td>${categorie.name}</td>
+                                <td>${categorie.description ?? ""}</td>
+                                <td class="d-flex align-items-center ml-1">
+
+                                    <a href="" class="btn btn-secondary btn-sm">Edit</a>
+
+                                    <form action="/admin/categorie/delete/${categorie.id}"
+                                        method="POST"
+                                        class="form_delete">
+
+                                        <button type="button"
+                                                class="btn btn-danger btn-sm btn_delete"
+                                                data-categorie="${categorie.id}">
+                                            Supprimer
+                                        </button>
+                                    </form>
+
+                                </td>
+                            </tr>
+                        `;
+
+                        $("#table_body").prepend(tr);
+
+                        $("#modal_categorie").modal("hide");
+
+                        form.reset();
+                        $(".form-control").removeClass("is-valid");
+
+                        btn_save.text(originalText).prop("disabled", false);
+
+                        Swal.fire({
+                            title: "Créé",
+                            text: "La catégorie a été ajoutée avec succès.",
+                            icon: "success",
+                        });
+                    }
                 },
+
                 error: function (xhr) {
-                    // fermer modal
-                    $("#modal_categorie").modal("hide");
-                    // reset form
-                    form.reset();
-                    $(".form-control").removeClass("is-valid");
-                    btn_save.text(originalText).prop("disabled", false);
+                    let response = xhr.responseJSON;
+                    let message = "Une erreur est survenue";
+
+                    if (response?.message) {
+                        message = response.message;
+                    }
+
+                    if (response?.errors?.slug) {
+                        message = response.errors.slug[0];
+                    }
+
                     Swal.fire({
                         title: "Erreur",
-                        text: "Impossible de créér une categorie.",
+                        text: message,
                         icon: "error",
                     });
+
+                    btn_save.text(originalText).prop("disabled", false);
                 },
             });
             // Prevent submit classique
@@ -108,5 +146,5 @@ $(document).ready(function () {
     formValidate();
 
     // BTN DELETE
-    $(".btn_delete").on("click", deleteCategorie);
+    $(document).on("click", ".btn_delete", deleteCategorie);
 });
