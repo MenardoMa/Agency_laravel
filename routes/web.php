@@ -30,7 +30,10 @@ Route::prefix('admin/')->name('admin.')->group(function () {
     Route::delete('categorie/delete/{id}', [CategorieController::class, 'destroy'])->name('categorie.destroy');
 
     // OPTIONS ROUTE:
-    Route::get('options', [OptionController::class, 'index'])->name('option.home');
+    Route::get('option', [OptionController::class, 'index'])->name('option.home');
+    Route::post('option', [OptionController::class, 'store'])->name('option.store');
+
+    Route::delete('option/{id}', [OptionController::class, 'destroy'])->name('option.destroy');
 
 
 });

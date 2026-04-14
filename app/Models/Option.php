@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Option extends Model
 {
     use HasFactory;
+
+    // Fillable champs
+    protected $fillable = ['name', 'slug'];
 }

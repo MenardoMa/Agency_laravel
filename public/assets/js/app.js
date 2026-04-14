@@ -1,5 +1,6 @@
 import { sweetAlert } from "./sweetAlert.js";
 import { deleteCategorie, editCategorie } from "./scripts.js";
+import { optionHandler } from "./app_option.js";
 
 function formValidate() {
     $("#form_categorie").validate({
@@ -182,4 +183,7 @@ $(document).ready(function () {
         $("#form_categorie")[0].reset();
         $("#form_categorie").removeAttr("data-id");
     });
+
+    // OPTION
+    optionHandler();
 });
