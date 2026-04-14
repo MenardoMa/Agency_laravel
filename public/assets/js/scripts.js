@@ -44,3 +44,37 @@ export function deleteCategorie(e) {
         });
     });
 }
+
+export function editCategorie(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    let courant_id = $(this).data("categorie");
+
+    if (courant_id) {
+        // AJAX
+        $.ajax({
+            url: `/admin/categorie/${courant_id}`,
+            method: "GET",
+            success: function (response) {
+                if (response.status) {
+                    let categorie = response.categorie;
+                    let form = $("#form_categorie");
+
+                    // remplir champs
+                    $("#name").val(categorie.name);
+                    $("#description").val(categorie.description);
+
+                    // définir mode UPDATE
+                    form.attr("action", `/admin/categorie/${categorie.id}`);
+                    form.attr("data-mode", "edit");
+
+                    $("#modal_categorie").modal("show");
+                }
+            },
+            error: function (xhr) {
+                console.log(xhr);
+            },
+        });
+    }
+}

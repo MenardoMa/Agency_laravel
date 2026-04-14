@@ -43,6 +43,44 @@ class CategorieController extends Controller
         ]);
     }
 
+    public function show(int $id)
+    {
+        $categorie = Category::find($id);
+        if ($categorie) {
+            return response()->json([
+                "status" => true,
+                "message" => "Categorie",
+                "categorie" => $categorie,
+            ]);
+        }
+
+        return response()->json([
+            "status" => false,
+            "message" => "Erreur categorie introuvable",
+        ]);
+    }
+
+    /**
+     * UPDATE CATEGORIE
+     * 
+     * @param CategorieFormRequest $request
+     * @param int $id
+     * @return never
+     */
+    public function update(CategorieFormRequest $request, int $id)
+    {
+        $categorie = Category::find($id);
+        if ($categorie) {
+            $categorie->update($request->validated());
+            return response()->json(["status" => true, "message" => "Categorie modifier avec success", "categorie" => $categorie]);
+        }
+
+        return response()->json([
+            "status" => false,
+            "message" => "Une erreur est survenue."
+        ]);
+    }
+
     public function destroy(int $id)
     {
 

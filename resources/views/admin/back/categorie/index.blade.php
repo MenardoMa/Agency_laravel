@@ -27,7 +27,7 @@
                     <td>{{ $categorie->name }}</td>
                     <td>{{ $categorie->description }}</td>
                     <td class="d-flex align-items-center ml-1">
-                        <a href="" class="btn btn-secondary btn-sm">Edit</a>
+                        <a href="" class="btn btn-secondary btn-sm btn_edit" data-categorie="{{ $categorie->id }}">Edit</a>
                         <form action="{{ route('admin.categorie.destroy', $categorie->id) }}" method="POST" class="form_delete">
                             <button type="button" class="btn btn-danger btn-sm btn_delete"
                                 data-categorie="{{ $categorie->id }}">Supprimer</button>

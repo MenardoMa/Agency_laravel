@@ -1,5 +1,5 @@
 import { sweetAlert } from "./sweetAlert.js";
-import { deleteCategorie } from "./scripts.js";
+import { deleteCategorie, editCategorie } from "./scripts.js";
 
 function formValidate() {
     $("#form_categorie").validate({
@@ -44,19 +44,29 @@ function formValidate() {
 
         // SUBMIT
         submitHandler: function (form) {
-            let data = $("form").serialize();
+            let formEl = $(form);
+            let mode = formEl.attr("data-mode");
+
+            let url = formEl.attr("action");
+            let method = mode === "edit" ? "PUT" : "POST";
+
+            let data = formEl.serialize();
+
             let btn_save = $("#btn_save");
             let originalText = btn_save.text();
-            // AJAX
+
             $.ajax({
-                url: $(form).attr("action"),
-                method: "POST",
+                url: url,
+                method: method,
+
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
                         "content",
                     ),
                 },
+
                 data: data,
+
                 beforeSend: function () {
                     btn_save
                         .html(
@@ -64,45 +74,64 @@ function formValidate() {
                         )
                         .prop("disabled", true);
                 },
+
                 success: function (response) {
                     if (response.status) {
                         let categorie = response.categorie;
-                        let tr = `
+
+                        if (mode === "edit") {
+                            // UPDATE ligne existante
+                            $("#row_" + categorie.id).replaceWith(`
                             <tr id="row_${categorie.id}">
                                 <th>${categorie.id}</th>
                                 <td>${categorie.name}</td>
                                 <td>${categorie.description ?? ""}</td>
                                 <td class="d-flex align-items-center ml-1">
-
-                                    <a href="" class="btn btn-secondary btn-sm">Edit</a>
-
-                                    <form action="/admin/categorie/delete/${categorie.id}"
-                                        method="POST"
-                                        class="form_delete">
-
+                                    <a href="" class="btn btn-secondary btn-sm btn_edit" data-categorie="${categorie.id}">Edit</a>
+                                    <form action="/admin/categorie/delete/${categorie.id}" method="POST" class="form_delete">
                                         <button type="button"
                                                 class="btn btn-danger btn-sm btn_delete"
                                                 data-categorie="${categorie.id}">
                                             Supprimer
                                         </button>
                                     </form>
-
                                 </td>
                             </tr>
-                        `;
-
-                        $("#table_body").prepend(tr);
+                        `);
+                        } else {
+                            //  CREATE
+                            $("#table_body").prepend(`
+                            <tr id="row_${categorie.id}">
+                                <th>${categorie.id}</th>
+                                <td>${categorie.name}</td>
+                                <td>${categorie.description ?? ""}</td>
+                                <td class="d-flex align-items-center ml-1">
+                                    <a href="" class="btn btn-secondary btn-sm btn_edit" data-categorie="${categorie.id}">Edit</a>
+                                    <form action="/admin/categorie/delete/${categorie.id}" method="POST" class="form_delete">
+                                        <button type="button"
+                                                class="btn btn-danger btn-sm btn_delete"
+                                                data-categorie="${categorie.id}">
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        `);
+                        }
 
                         $("#modal_categorie").modal("hide");
 
                         form.reset();
-                        $(".form-control").removeClass("is-valid");
+                        formEl.removeAttr("data-mode"); // reset mode
 
                         btn_save.text(originalText).prop("disabled", false);
 
                         Swal.fire({
-                            title: "Créé",
-                            text: "La catégorie a été ajoutée avec succès.",
+                            title: "Succès",
+                            text:
+                                mode === "edit"
+                                    ? "Catégorie mise à jour"
+                                    : "Catégorie créée",
                             icon: "success",
                         });
                     }
@@ -110,26 +139,23 @@ function formValidate() {
 
                 error: function (xhr) {
                     let response = xhr.responseJSON;
-                    let message = "Une erreur est survenue";
 
-                    if (response?.message) {
-                        message = response.message;
-                    }
-
-                    if (response?.errors?.slug) {
-                        message = response.errors.slug[0];
-                    }
+                    let message = response?.errors
+                        ? Object.values(response.errors)
+                              .map((e) => e[0])
+                              .join("<br>")
+                        : response?.message || "Erreur";
 
                     Swal.fire({
                         title: "Erreur",
-                        text: message,
+                        html: message,
                         icon: "error",
                     });
 
                     btn_save.text(originalText).prop("disabled", false);
                 },
             });
-            // Prevent submit classique
+
             return false;
         },
     });
@@ -145,6 +171,15 @@ $(document).ready(function () {
     // FORM VALIDATE
     formValidate();
 
+    // BTN EDIT
+    $(document).on("click", ".btn_edit", editCategorie);
+
     // BTN DELETE
     $(document).on("click", ".btn_delete", deleteCategorie);
+
+    // BTN CLOSE
+    $("#modal_categorie").on("hidden.bs.modal", function () {
+        $("#form_categorie")[0].reset();
+        $("#form_categorie").removeAttr("data-id");
+    });
 });

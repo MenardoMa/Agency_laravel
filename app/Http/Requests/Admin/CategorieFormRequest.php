@@ -26,7 +26,7 @@ class CategorieFormRequest extends FormRequest
         return [
             'name' => ['required', 'min:3'],
             'description' => ['nullable', 'min:8', 'string'],
-            'slug' => ['required', 'min:3', Rule::unique('categories', 'slug')],
+            'slug' => ['required', 'min:3', Rule::unique('categories', 'slug')->ignore($this->id)],
         ];
     }
 
