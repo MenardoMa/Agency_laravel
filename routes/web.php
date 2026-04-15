@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BienController;
 use App\Http\Controllers\Admin\CategorieController;
 use App\Http\Controllers\Admin\OptionController;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,10 @@ Route::get('/', function () {
 
 
 Route::prefix('admin/')->name('admin.')->group(function () {
+
+    // BIEN ROUTE:
+    Route::get('bien', [BienController::class, 'index'])->name('bien.home');
+    Route::get('bien/create', [BienController::class, 'formCreate'])->name('bien.form_create');
 
     // CATEGORIE ROUTE:
     Route::get('categorie', [CategorieController::class, 'index'])->name('categorie.home');
