@@ -182,6 +182,11 @@ $(document).ready(function () {
     $("#modal_categorie").on("hidden.bs.modal", function () {
         $("#form_categorie")[0].reset();
         $("#form_categorie").removeAttr("data-id");
+
+        $("#form_categorie")
+            .attr("action", `/admin/categorie`)
+            .removeAttr("data-mode");
+        $(".form-control").removeClass("is-valid is-invalid");
     });
 
     // OPTION

@@ -32,7 +32,8 @@ Route::prefix('admin/')->name('admin.')->group(function () {
     // OPTIONS ROUTE:
     Route::get('option', [OptionController::class, 'index'])->name('option.home');
     Route::post('option', [OptionController::class, 'store'])->name('option.store');
-
+    Route::get('option/{id}', [OptionController::class, 'show'])->name('option.show');
+    Route::put('option/{id}', [OptionController::class, 'update'])->name('option.update');
     Route::delete('option/{id}', [OptionController::class, 'destroy'])->name('option.destroy');
 
 

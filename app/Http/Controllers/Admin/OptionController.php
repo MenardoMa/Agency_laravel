@@ -19,6 +19,28 @@ class OptionController extends Controller
     }
 
     /**
+     * SHOW POST
+     * 
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show(int $id)
+    {
+        $option = Option::find($id);
+        if (!$option) {
+            return response()->json([
+                "status" => false,
+                "message" => "Option introuvable",
+            ]);
+        }
+
+        return response()->json([
+            "status" => true,
+            "option" => $option,
+        ]);
+    }
+
+    /**
      * 
      * Create option
      * 
@@ -33,15 +55,42 @@ class OptionController extends Controller
                 "status" => true,
                 "message" => "Option créée avec succès",
                 "option" => $option,
-            ], 201);
+            ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 "status" => false,
                 "message" => "Une erreur est survenue lors de la création de l'option",
                 "error" => $e->getMessage()
-            ], 500);
+            ]);
         }
+    }
+
+    /**
+     * Option Edit
+     * 
+     * @param OptionFormRequest $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(OptionFormRequest $request, int $id)
+    {
+        $option = Option::find($id);
+        if (!$option) {
+            return response()->json([
+                "status" => false,
+                "message" => "Option introuvable",
+            ]);
+        }
+
+        // Edit Option
+        $option->update($request->validated());
+        return response()->json([
+            "status" => true,
+            "message" => "Option modifier avec succès",
+            "option" => $option
+        ]);
+
     }
 
     /**
@@ -59,13 +108,13 @@ class OptionController extends Controller
             return response()->json([
                 "status" => false,
                 "message" => "Option introuvable",
-            ], 404);
+            ]);
         }
 
         $option->delete();
         return response()->json([
             "status" => true,
             "message" => "Option supprimée avec succès",
-        ], 200);
+        ]);
     }
 }
