@@ -10,7 +10,6 @@
             </div>
             <div class="modal-body">
                 <form action="{{ route('admin.option.store') }}" method="POST" id="form-option">
-                    @csrf
                     <div class="form-group">
                         <label for="name">Nom</label>
                         <input type="text" class="form-control" name="name" id="name"

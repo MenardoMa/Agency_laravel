@@ -18,7 +18,7 @@
                 <th scope="col">Action</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="table_body">
             @foreach ($options as $option)
                 <tr id="row_{{ $option->id }}">
                     <th scope="row">{{ $option->id }}</th>

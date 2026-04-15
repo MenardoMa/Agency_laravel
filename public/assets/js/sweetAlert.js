@@ -23,3 +23,11 @@ export function sweetAlert(title, text, onConfirm) {
         return false;
     });
 }
+
+export function sweetAlertReturn(title, text, icon = "success") {
+    Swal.fire({
+        title: title,
+        text: text,
+        icon: icon,
+    });
+}

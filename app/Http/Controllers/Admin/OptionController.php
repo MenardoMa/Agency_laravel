@@ -44,6 +44,13 @@ class OptionController extends Controller
         }
     }
 
+    /**
+     * 
+     * Delete option
+     * 
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function destroy(int $id)
     {
         $option = Option::find($id);

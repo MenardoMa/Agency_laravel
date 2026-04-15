@@ -1,4 +1,4 @@
-import { sweetAlert } from "./sweetAlert.js";
+import { sweetAlert, sweetAlertReturn } from "./sweetAlert.js";
 
 export function optionHandler() {
     $(document).on("click", "#btn-create-option", function (e) {
@@ -52,15 +52,15 @@ function initValidation() {
             const btn_save = $("#btn_save");
             const original_text = btn_save.text();
 
-            // AJAX
+            // AJAX CREATE OPTION
             $.ajax({
                 url: form_element.attr("action"),
                 method: "POST",
-                // headers: {
-                //     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                //         "content",
-                //     ),
-                // },
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content",
+                    ),
+                },
                 beforeSend: function () {
                     btn_save
                         .html(
@@ -71,29 +71,45 @@ function initValidation() {
                 data: data,
                 success: function (response) {
                     if (response.status) {
+                        let option = response.option;
+                        let action = `/admin/option/${option.id}`;
+
+                        $("#table_body").prepend(`
+                        <tr id="row_${option.id}">
+                            <th scope="row">${option.id}</th>
+                            <td>${option.name}</td>
+                            <td>${option.icon ?? "Pas d'icon"}</td>
+                            <td class="text-end d-flex align-items-center">
+                                <button class="btn btn-secondary btn-sm btn-edit" data-option="${option.id}">Edit</button>
+                                <form action="${action}" method="POST" class="ml-2"
+                                    id="form-delete">
+                                    <button class="btn btn-danger btn-sm btn-delete" data-option="${option.id}">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        `);
+
                         $("#modal-option").modal("hide");
 
                         form_element[0].reset();
                         $(".form-control").removeClass("is-valid is-invalid");
                         btn_save.text(original_text).prop("disabled", false);
-
-                        Swal.fire({
-                            title: "Succès",
-                            text: "Catégorie créée",
-                            icon: "success",
-                        });
+                        sweetAlertReturn("Succès", "Option créée avec succès");
                     }
                 },
                 error: function (xhr) {
-                    console.log(xhr);
+                    sweetAlertReturn(
+                        "Erreur",
+                        "Impossible de créér une option.",
+                        "error",
+                    );
                 },
             });
         },
     });
 }
 
-// OPTION DELETE
-
+// DELETE OPTION
 function deleteOption(e) {
     e.preventDefault();
     let option_id = $(this).attr("data-option");
@@ -101,7 +117,7 @@ function deleteOption(e) {
     let data = null;
 
     if (!option_id) {
-        console.log("Erreur id");
+        sweetAlertReturn("Erreur", "Impossible de supprimer.", "error");
         return false;
     }
 
@@ -123,10 +139,19 @@ function deleteOption(e) {
                 data: data,
                 success: function (response) {
                     if (response.status) {
+                        $("#row_" + option_id).remove();
+                        sweetAlertReturn(
+                            "Succès",
+                            "L'élément a bien été supprimé.",
+                        );
                     }
                 },
                 error: function (xhr) {
-                    console.log(xhr);
+                    sweetAlertReturn(
+                        "Erreur",
+                        "Impossible de supprimer.",
+                        "error",
+                    );
                 },
             });
         },
