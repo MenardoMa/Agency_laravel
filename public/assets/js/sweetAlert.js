@@ -31,3 +31,21 @@ export function sweetAlertReturn(title, text, icon = "success") {
         icon: icon,
     });
 }
+
+const notyf = new Notyf({
+    duration: 1000,
+    position: {
+        x: "right",
+        y: "top",
+    },
+});
+
+const ALLOWED_TYPES = ["success", "error", "warning", "info"];
+
+export function notify(type, message) {
+    if (ALLOWED_TYPES.includes(type)) {
+        notyf[type](message);
+    } else {
+        notyf.success(message);
+    }
+}

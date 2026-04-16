@@ -1,6 +1,7 @@
 import { sweetAlert } from "./sweetAlert.js";
 import { deleteCategorie, editCategorie } from "./scripts.js";
 import { optionHandler } from "./app_option.js";
+import { bienHandler } from "./app_bien.js";
 
 function formValidate() {
     $("#form_categorie").validate({
@@ -191,4 +192,7 @@ $(document).ready(function () {
 
     // OPTION
     optionHandler();
+
+    // BIEN
+    bienHandler();
 });

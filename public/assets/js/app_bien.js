@@ -1,0 +1,185 @@
+import { sweetAlertReturn, notify } from "./sweetAlert.js";
+
+export function bienHandler() {
+    // Form validation
+    formValidate();
+}
+
+function formValidate() {
+    $("#form_bien").validate({
+        rules: {
+            title: {
+                required: true,
+            },
+            surface: {
+                required: true,
+                number: true,
+            },
+            prix: {
+                required: true,
+                number: true,
+            },
+            description: {
+                required: true,
+                minlength: 8,
+            },
+            nombre_pieces: {
+                required: true,
+                number: true,
+                min: 1,
+            },
+            nombre_chambres: {
+                required: true,
+                number: true,
+            },
+            nombre_salles_bain: {
+                required: true,
+                number: true,
+            },
+            etage: {
+                required: true,
+                number: true,
+            },
+            adresse: {
+                required: true,
+                minlength: 4,
+            },
+            ville: {
+                required: true,
+                minlength: 2,
+            },
+            code_postal: {
+                required: true,
+                minlength: 4,
+                maxlength: 8,
+            },
+            category_id: {
+                required: true,
+            },
+            statut: {
+                required: true,
+            },
+            type: {
+                required: true,
+            },
+        },
+
+        messages: {
+            title: {
+                required: "Le titre est obligatoire.",
+            },
+            surface: {
+                required: "La surface est obligatoire.",
+                number: "La surface doit être un nombre valide.",
+            },
+            prix: {
+                required: "Le prix est obligatoire.",
+                number: "Le prix doit être un nombre valide.",
+            },
+            description: {
+                required: "La description est obligatoire.",
+                minlength:
+                    "La description doit contenir au moins 8 caractères.",
+            },
+            nombre_pieces: {
+                required: "Le nombre de pièces est obligatoire.",
+                number: "Le nombre de pièces doit être un nombre valide.",
+                min: "Le nombre de pièces doit être au moins 1.",
+            },
+            nombre_chambres: {
+                required: "Le nombre de chambres est obligatoire.",
+                number: "Le nombre de chambres doit être un nombre valide.",
+            },
+            nombre_salles_bain: {
+                required: "Le nombre de salles de bain est obligatoire.",
+                number: "Le nombre de salles de bain doit être un nombre valide.",
+            },
+            etage: {
+                required: "L’étage est obligatoire.",
+                number: "L’étage doit être un nombre valide.",
+            },
+            adresse: {
+                required: "L’adresse est obligatoire.",
+                minlength: "L’adresse doit contenir au moins 4 caractères.",
+            },
+            ville: {
+                required: "La ville est obligatoire.",
+                minlength: "La ville doit contenir au moins 2 caractères.",
+            },
+            code_postal: {
+                required: "Le code postal est obligatoire.",
+                minlength:
+                    "Le code postal doit contenir au moins 4 caractères.",
+                maxlength: "Le code postal ne doit pas dépasser 8 caractères.",
+            },
+            categorie: {
+                required: "Veuillez sélectionner une catégorie.",
+            },
+            status: {
+                required: "Veuillez sélectionner un statut.",
+            },
+            type: {
+                required: "Veuillez sélectionner un type.",
+            },
+        },
+
+        errorElement: "div",
+        errorClass: "invalid-feedback",
+
+        highlight: function (element) {
+            $(element).addClass("is-invalid").removeClass("is-valid");
+        },
+
+        unhighlight: function (element) {
+            $(element).removeClass("is-invalid").addClass("is-valid");
+        },
+
+        errorPlacement: function (error, element) {
+            error.insertAfter(element);
+        },
+
+        // submitHandler
+        submitHandler: function (form) {
+            let form_element = $(form);
+            let data = form_element.serialize();
+            //AJAX STORE BIEN
+            ajaxStoreBien(form_element, data);
+        },
+    });
+}
+
+//AJAX STORE BIEN
+function ajaxStoreBien(form_element, data) {
+    // AJAX
+    $.ajax({
+        url: form_element.attr("action"),
+        method: form_element.attr("method"),
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+        data: data,
+
+        beforeSend: function () {
+            $("#btn_save")
+                .html(
+                    '<span class="spinner-border spinner-border-sm"></span> Traitement ...',
+                )
+                .prop("disabled", true);
+        },
+
+        success: function (response) {
+            if (response.status) {
+                notify("success", response.message);
+                window.location.href = "admin/";
+            }
+        },
+        error: function (xhr) {
+            sweetAlertReturn(
+                "Erreur",
+                "Une erreur est survenue, veuillez réessayer.",
+                "error",
+            );
+            window.location.reload();
+        },
+    });
+}

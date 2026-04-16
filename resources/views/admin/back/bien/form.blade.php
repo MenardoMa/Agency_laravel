@@ -5,7 +5,7 @@
 @section('content')
     <h3>Creation d'un Bien</h3>
     <div class="mt-4">
-        <form>
+        <form action="{{ route("admin.bien.store") }}" method="POST" id="form_bien">
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="title">Titre</label>
@@ -61,27 +61,43 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="code_postal">Code postal</label>
-                    <input type="number" name="code_postal" class="form-control" id="code_postal" placeholder="Ex: 1000">
+                    <input type="text" name="code_postal" class="form-control" id="code_postal" placeholder="Ex: 1000">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <label for="categorie">Catégorie</label>
-                    <select id="categorie" name="categorie" class="form-control">
+                    <label for="category_id">Catégorie</label>
+                    <select id="category_id" name="category_id" class="form-control">
                         <option selected disabled>Choisir une catégorie</option>
+                        @foreach ($categories as $categorie)
+                            <option value="{{ $categorie->id }}">{{ $categorie->name }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="status">Statut</label>
-                    <select id="status" name="status" class="form-control">
-                        <option selected disabled>Choisir un statut</option>
+                    <label for="statut">Statut</label>
+                    <select id="statut" name="statut" class="form-control">
+                        @if ($bien->id)
+                            @foreach ($statues as $statue)
+                                <option value="{{ $statue->value }}">
+                                    {{ $statue->name }}
+                                </option>
+                            @endforeach
+                        @else
+                            <option value="{{ $defaultStatus->value }}" selected>
+                                {{ $defaultStatus->name }}
+                            </option>
+                        @endif
                     </select>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="type">Type</label>
                     <select id="type" name="type" class="form-control">
                         <option selected disabled>Choisir un type d'opération</option>
+                        @foreach ($types as $type)
+                            <option value="{{ $type->value }}">{{ $type->name }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -96,7 +112,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary btn-sm" id="btn_save">
                 Créer le bien
             </button>
         </form>
