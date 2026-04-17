@@ -8,13 +8,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\BienFormRequest;
 use App\Models\Bien;
 use App\Models\Category;
+use App\Models\Option;
 
 class BienController extends Controller
 {
     //Home Page
     public function index()
     {
-        return view("admin.back.bien.index");
+        $biens = Bien::with('category')->orderBy("created_at", "Desc")->paginate(10);
+        return view("admin.back.bien.index", [
+            'biens' => $biens
+        ]);
     }
 
     /**
@@ -28,12 +32,14 @@ class BienController extends Controller
         $categories = Category::all();
         $statues = BienStatus::cases();
         $types = BienType::cases();
+        $options = Option::all();
 
         return view("admin.back.bien.form", [
             'bien' => new Bien(),
             'categories' => $categories,
             'statues' => $statues,
             'types' => $types,
+            'options' => $options,
             'defaultStatus' => BienStatus::Disponible,
         ]);
     }
@@ -47,8 +53,18 @@ class BienController extends Controller
      */
     public function store(BienFormRequest $request)
     {
+
+        $data = $request->validated();
+        $options = $data['options'] ?? [];
+
+        // On retire options dans nos validation
+        unset($data['options']);
+
         try {
-            $bien = Bien::create($request->validated());
+            $bien = Bien::create($data);
+            // Create options
+            $bien->options()->sync($options);
+
             return response()->json([
                 'status' => true,
                 'message' => "Le bien a été créé avec succès",
@@ -63,4 +79,23 @@ class BienController extends Controller
         }
 
     }
+
+    public function destroy(int $id)
+    {
+        $bien = Bien::find($id);
+        if (!$bien) {
+            return response()->json([
+                'status' => false,
+                'message' => "Impossible de supprimé le bien",
+            ]);
+        }
+
+        $bien->delete();
+        return response()->json([
+            'status' => true,
+            'message' => "Le bien a été supprimé avec succès",
+        ]);
+
+    }
+
 }

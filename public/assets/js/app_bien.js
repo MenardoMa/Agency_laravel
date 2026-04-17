@@ -1,8 +1,10 @@
-import { sweetAlertReturn, notify } from "./sweetAlert.js";
+import { sweetAlert, sweetAlertReturn, notify } from "./sweetAlert.js";
 
 export function bienHandler() {
     // Form validation
     formValidate();
+    // DELETE BIEN
+    $(document).on("click", ".btn_delete_option", deleteBien);
 }
 
 function formValidate() {
@@ -143,13 +145,13 @@ function formValidate() {
             let form_element = $(form);
             let data = form_element.serialize();
             //AJAX STORE BIEN
-            ajaxStoreBien(form_element, data);
+            storeBien(form_element, data);
         },
     });
 }
 
 //AJAX STORE BIEN
-function ajaxStoreBien(form_element, data) {
+function storeBien(form_element, data) {
     // AJAX
     $.ajax({
         url: form_element.attr("action"),
@@ -170,7 +172,9 @@ function ajaxStoreBien(form_element, data) {
         success: function (response) {
             if (response.status) {
                 notify("success", response.message);
-                window.location.href = "admin/";
+                setTimeout(() => {
+                    window.location.href = "/admin/bien";
+                }, 1000);
             }
         },
         error: function (xhr) {
@@ -182,4 +186,42 @@ function ajaxStoreBien(form_element, data) {
             window.location.reload();
         },
     });
+}
+
+// AJAX DELETE BIEN
+function deleteBien(e) {
+    e.preventDefault();
+    let bien_id = $(this).attr("data-option");
+
+    if (!bien_id) {
+        console.log("Une Erreur est survenue ...");
+        return false;
+    }
+
+    // AJAX LOGIQUE
+    sweetAlert(
+        "Êtes-vous sûr ?",
+        "Cette action est irréversible.",
+        function () {
+            // AJAX
+            $.ajax({
+                url: "bien/" + bien_id,
+                method: "DELETE",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                        "content",
+                    ),
+                },
+                success: function (response) {
+                    if (response.status) {
+                        notify("success", response.message);
+                        $("#row_" + bien_id).remove();
+                    }
+                },
+                error: function (xhr) {
+                    notify("error", "Erreur lors de la suppression");
+                },
+            });
+        },
+    );
 }

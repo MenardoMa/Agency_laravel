@@ -45,6 +45,7 @@ class BienFormRequest extends FormRequest
 
             'statut' => ['required', Rule::enum(BienStatus::class)],
             'type' => ['required', Rule::enum(BienType::class)],
+            'options' => ['nullable', 'exists:options,id'],
         ];
     }
 
@@ -128,6 +129,9 @@ class BienFormRequest extends FormRequest
             // TYPE
             'type.required' => 'Veuillez sélectionner un type.',
             'type.enum' => 'Le type sélectionné est invalide.',
+
+            // OPTIONS
+            'options.exists' => 'L\'option sélectionnée est invalide.',
         ];
     }
 }

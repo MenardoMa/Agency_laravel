@@ -46,4 +46,24 @@ class Bien extends Model
         'type' => BienType::class,
     ];
 
+    /**
+     * Bien a une categorie
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Many To Many
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function options()
+    {
+        return $this->belongsToMany(Option::class);
+    }
+
 }

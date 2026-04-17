@@ -14,7 +14,51 @@
     <!-- Notifi CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 
+    <!-- Tom Select CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.5.2/dist/css/tom-select.bootstrap5.css" rel="stylesheet">
+
     <title>Admin | @yield('title')</title>
+    <style>
+        .ts-control {
+            min-height: calc(1.5em + .75rem + 2px);
+            padding: .375rem .75rem;
+            border-radius: .25rem;
+            border: 1px solid #ced4da;
+            background-color: #fff;
+        }
+
+        .ts-control.focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 .2rem rgba(0, 123, 255, .25);
+        }
+
+        .ts-dropdown {
+            border-radius: .25rem;
+            border: 1px solid #ced4da;
+        }
+
+        .ts-control .item {
+            background: #007bff;
+            color: #fff;
+            border-radius: 3px;
+            padding: 2px 6px;
+            margin: 2px;
+        }
+
+        .ts-dropdown {
+            background: #fff !important;
+            z-index: 9999 !important;
+            border: 1px solid #ced4da;
+        }
+
+        .ts-dropdown-content {
+            background: #fff;
+        }
+
+        .ts-control {
+            background-color: #fff;
+        }
+    </style>
 </head>
 
 <body>
@@ -44,8 +88,11 @@
         integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+"
         crossorigin="anonymous"></script>
 
-    <!-- NOtif Js Script -->
+    <!-- Notif Js Script -->
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+    <!-- Tom Select Js Script -->
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.5.2/dist/js/tom-select.complete.min.js"></script>
 
     <!-- Principal Js Script -->
     <script type="module" src="{{ asset("assets/js/app.js") }}"></script>

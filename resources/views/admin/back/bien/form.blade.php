@@ -100,6 +100,20 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="form-group col-md-12">
+                    <label for="options" class="font-weight-bold">Options</label>
+
+                    <select id="options" name="options[]" class="form-control" multiple
+                        placeholder="Choisir des options...">
+                        @foreach ($options as $option)
+                            <option value="{{ $option->id }}">{{ $option->name }}</option>
+                        @endforeach
+                    </select>
+
+                    <small class="form-text text-muted">
+                        Vous pouvez sélectionner plusieurs options.
+                    </small>
+                </div>
             </div>
 
             <div class="form-group">

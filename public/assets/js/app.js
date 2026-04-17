@@ -195,4 +195,13 @@ $(document).ready(function () {
 
     // BIEN
     bienHandler();
+
+    // SELECT MULTIPLE
+    new TomSelect("#options", {
+        plugins: ["remove_button"],
+        placeholder: "Choisir des options...",
+        maxItems: null,
+        hideSelected: true,
+        closeAfterSelect: false,
+    });
 });
