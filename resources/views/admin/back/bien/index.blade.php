@@ -29,10 +29,20 @@
                     <td>{{ $bien->title }}</td>
                     <td>{{ $bien->description }}</td>
                     <td>{{ $bien->category->name }}</td>
-                    <td>""</td>
-                    <td>{{ $bien->is_is_featured ? "Oui" : "Non" }}</td>
+                    <td class="d-flex flex-wrap">
+                        @if ($bien->options->isNotEmpty())
+                            @foreach ($bien->options as $option)
+                                <span class="badge badge-secondary mr-1 mb-1">
+                                    {{ $option->name }}
+                                </span>
+                            @endforeach
+                        @else
+                            <span class="text-muted">Aucune option</span>
+                        @endif
+                    </td>
+                    <td>{{ $bien->is_featured ? "Oui" : "Non" }}</td>
                     <td class="d-flex align-items-center ml-1">
-                        <a href="" class="btn btn-secondary btn-sm btn_edit" data-option="">Edit</a>
+                        <a href="{{ route('admin.bien.edit', $bien->slug) }}" class="btn btn-secondary btn-sm">Edit</a>
                         <button type="button" class="btn btn-danger btn-sm btn_delete_option"
                             data-option="{{ $bien->id }}">Supprimer</button>
                     </td>

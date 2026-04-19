@@ -97,6 +97,8 @@
     <!-- Principal Js Script -->
     <script type="module" src="{{ asset("assets/js/app.js") }}"></script>
 
+    @yield("scripts")
+
 </body>
 
 </html>

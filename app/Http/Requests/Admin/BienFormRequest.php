@@ -46,13 +46,20 @@ class BienFormRequest extends FormRequest
             'statut' => ['required', Rule::enum(BienStatus::class)],
             'type' => ['required', Rule::enum(BienType::class)],
             'options' => ['nullable', 'exists:options,id'],
+            'images' => ['array', 'min:1'],
+            'images.*' => [
+                'required',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+            ],
         ];
     }
 
     protected function prepareForValidation()
     {
         $this->merge([
-            'slug' => $this->slug ? $this->slug : Str::slug($this->title)
+            'slug' => $this->slug ? $this->slug : Str::slug($this->title) . '-' . Str::uuid()
         ]);
     }
 
@@ -132,6 +139,16 @@ class BienFormRequest extends FormRequest
 
             // OPTIONS
             'options.exists' => 'L\'option sélectionnée est invalide.',
+
+            // IMAGES
+            'images.array' => "Les images doivent être envoyées sous forme de liste.",
+            'images.min' => "Veuillez ajouter au moins une image.",
+
+            'images.*.required' => "Chaque image est obligatoire.",
+            'images.*.image' => "Chaque fichier doit être une image valide.",
+            'images.*.mimes' => "Les images doivent être au format jpg, jpeg, png ou webp.",
+            'images.*.max' => "Chaque image ne doit pas dépasser 2 Mo.",
+
         ];
     }
 }

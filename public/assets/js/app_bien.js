@@ -1,12 +1,5 @@
 import { sweetAlert, sweetAlertReturn, notify } from "./sweetAlert.js";
 
-export function bienHandler() {
-    // Form validation
-    formValidate();
-    // DELETE BIEN
-    $(document).on("click", ".btn_delete_option", deleteBien);
-}
-
 function formValidate() {
     $("#form_bien").validate({
         rules: {
@@ -64,6 +57,11 @@ function formValidate() {
             type: {
                 required: true,
             },
+            images: {
+                required: function () {
+                    return $("#images")[0].files.length === 0;
+                },
+            },
         },
 
         messages: {
@@ -114,7 +112,7 @@ function formValidate() {
                     "Le code postal doit contenir au moins 4 caractères.",
                 maxlength: "Le code postal ne doit pas dépasser 8 caractères.",
             },
-            categorie: {
+            category_id: {
                 required: "Veuillez sélectionner une catégorie.",
             },
             status: {
@@ -122,6 +120,9 @@ function formValidate() {
             },
             type: {
                 required: "Veuillez sélectionner un type.",
+            },
+            images: {
+                required: "Veuillez ajouter au moins une image.",
             },
         },
 
@@ -152,10 +153,18 @@ function formValidate() {
 
 //AJAX STORE BIEN
 function storeBien(form_element, data) {
+    // METHOD
+    let method = form_element.attr("method");
+    let hiddenMethod = form_element.find('input[name="_method"]').val();
+
+    if (hiddenMethod) {
+        method = hiddenMethod;
+    }
+
     // AJAX
     $.ajax({
         url: form_element.attr("action"),
-        method: form_element.attr("method"),
+        method: method,
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
@@ -178,12 +187,31 @@ function storeBien(form_element, data) {
             }
         },
         error: function (xhr) {
-            sweetAlertReturn(
-                "Erreur",
-                "Une erreur est survenue, veuillez réessayer.",
-                "error",
-            );
-            window.location.reload();
+            if (xhr.status === 422) {
+                let errors = xhr.responseJSON.errors;
+
+                let message = "";
+
+                Object.values(errors).forEach((err) => {
+                    message += err + "\n";
+                });
+
+                $.each(errors, function (key, value) {
+                    $("#" + key).addClass("is-invalid");
+                });
+
+                $("#btn_save")
+                    .html("Sauvegarder les modifications")
+                    .prop("disabled", false);
+
+                sweetAlertReturn("Erreur de validation", message, "error");
+            } else {
+                sweetAlertReturn(
+                    "Erreur",
+                    "Une erreur serveur est survenue",
+                    "error",
+                );
+            }
         },
     });
 }
@@ -224,4 +252,11 @@ function deleteBien(e) {
             });
         },
     );
+}
+
+export function bienHandler() {
+    // Form validation
+    formValidate();
+    // DELETE BIEN
+    $(document).on("click", ".btn_delete_option", deleteBien);
 }

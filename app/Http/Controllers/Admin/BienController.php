@@ -15,7 +15,7 @@ class BienController extends Controller
     //Home Page
     public function index()
     {
-        $biens = Bien::with('category')->orderBy("created_at", "Desc")->paginate(10);
+        $biens = Bien::with('category', 'options')->orderBy("created_at", "Desc")->paginate(10);
         return view("admin.back.bien.index", [
             'biens' => $biens
         ]);
@@ -53,33 +53,86 @@ class BienController extends Controller
      */
     public function store(BienFormRequest $request)
     {
+        $data = $request->validated();
+
+        $options = $data['options'] ?? [];
+        unset($data['options']);
+
+        $bien = Bien::create($data);
+        $bien->options()->sync($options);
+
+        return response()->json([
+            'status' => true,
+            'message' => "Le bien a été créé avec succès",
+            'bien' => $bien
+        ]);
+    }
+
+    /**
+     * 
+     * Retourne la formulaire avec les données du bien
+     * 
+     * @param Bien $bien
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function edit(Bien $bien)
+    {
+        $categories = Category::all();
+        $statues = BienStatus::cases();
+        $types = BienType::cases();
+        $options = Option::all();
+
+        return view("admin.back.bien.form", [
+            'bien' => $bien,
+            'categories' => $categories,
+            'statues' => $statues,
+            'types' => $types,
+            'options' => $options,
+            'defaultStatus' => BienStatus::Disponible,
+        ]);
+    }
+
+    /**
+     * 
+     * Edit bien
+     * 
+     * @param BienFormRequest $request
+     * @param Bien $bien
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(BienFormRequest $request, Bien $bien)
+    {
 
         $data = $request->validated();
         $options = $data['options'] ?? [];
-
-        // On retire options dans nos validation
         unset($data['options']);
 
         try {
-            $bien = Bien::create($data);
-            // Create options
+            $bien->update($data);
             $bien->options()->sync($options);
 
             return response()->json([
                 'status' => true,
-                'message' => "Le bien a été créé avec succès",
+                'message' => "Le bien a été modifié avec succès",
                 'bien' => $bien
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => "Impossible de créer le bien",
+                'message' => "Impossible de modifier le bien",
                 'error' => $e->getMessage()
             ]);
         }
-
     }
 
+
+    /**
+     * 
+     * DELETE BIEN
+     * 
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function destroy(int $id)
     {
         $bien = Bien::find($id);

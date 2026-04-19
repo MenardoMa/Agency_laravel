@@ -27,6 +27,8 @@ Route::prefix('admin/')->name('admin.')->group(function () {
     Route::get('bien', [BienController::class, 'index'])->name('bien.home');
     Route::get('bien/create', [BienController::class, 'formCreate'])->name('bien.form_create');
     Route::post('bien/create', [BienController::class, 'store'])->name('bien.store');
+    Route::get('bien/edit/{bien:slug}', [BienController::class, 'edit'])->name('bien.edit');
+    Route::put('bien/edit/{bien:slug}', [BienController::class, 'update'])->name('bien.update');
     Route::delete('bien/{id}', [BienController::class, 'destroy'])->name('bien.destroy');
 
     // CATEGORIE ROUTE:
