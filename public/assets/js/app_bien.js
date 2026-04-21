@@ -248,45 +248,40 @@ function deleteBien(e) {
 }
 
 // AJAX DELETE IMAGE
-
 function deleteImage(e) {
     e.preventDefault();
 
     let button = $(e.currentTarget);
     let id_image = button.data("id");
 
-    if (!id_image) {
-        Notyf("error", "Impossible de retirer cette image");
-        return;
-    }
-
     let imageItem = button.closest(".image-item");
-    button.prop("disabled", true);
+    let loader = imageItem.find(".image-loader");
+
+    if (!id_image) return;
+
+    // 🔥 afficher spinner
+    loader.removeClass("d-none");
 
     $.ajax({
         url: "/admin/image/" + id_image,
         method: "POST",
-        data: {
-            _method: "DELETE",
-        },
+        data: { _method: "DELETE" },
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
 
         success: function (response) {
             if (response.status) {
-                notify("success", response.message);
-                imageItem.fadeOut(200, function () {
+                imageItem.fadeOut(300, function () {
                     $(this).remove();
                 });
             } else {
-                button.prop("disabled", false);
+                loader.addClass("d-none");
             }
         },
 
         error: function () {
-            notify("error", "Impossible de retirer cette image");
-            button.prop("disabled", false);
+            loader.addClass("d-none");
         },
     });
 }

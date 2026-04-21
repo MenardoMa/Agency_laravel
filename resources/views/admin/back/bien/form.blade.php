@@ -161,9 +161,14 @@
                     <div id="preview_images" class="image-grid mt-3">
                         @foreach ($bien->images as $image)
                             <div class="image-item" data-id="{{ $image->id }}">
-                                <img src="{{ $image->getImageUrl() }}" id="image">
-                                <button type="button" class="btn-delete-image d-flex align-items-center justify-content-center"
-                                    data-id="{{ $image->id }}">&times;</button>
+                                <img src="{{ $image->getImageUrl() }}" class="img-preview">
+                                <!--  loader caché -->
+                                <div class="image-loader d-none">
+                                    <div class="spinner-border text-primary" role="status"></div>
+                                </div>
+                                <button type="button" class="btn-delete-image" data-id="{{ $image->id }}">
+                                    &times;
+                                </button>
                             </div>
                         @endforeach
                     </div>
