@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BienController;
 use App\Http\Controllers\Admin\CategorieController;
+use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\OptionController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,8 @@ Route::prefix('admin/')->name('admin.')->group(function () {
     Route::get('bien/edit/{bien:slug}', [BienController::class, 'edit'])->name('bien.edit');
     Route::put('bien/edit/{bien:slug}', [BienController::class, 'update'])->name('bien.update');
     Route::delete('bien/{id}', [BienController::class, 'destroy'])->name('bien.destroy');
+    // DELETE IMAGE
+    Route::delete('image/{id}', [ImageController::class, 'destroy'])->name('image.destroy');
 
     // CATEGORIE ROUTE:
     Route::get('categorie', [CategorieController::class, 'index'])->name('categorie.home');

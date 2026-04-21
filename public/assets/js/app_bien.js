@@ -57,11 +57,6 @@ function formValidate() {
             type: {
                 required: true,
             },
-            images: {
-                required: function () {
-                    return $("#images")[0].files.length === 0;
-                },
-            },
         },
 
         messages: {
@@ -121,9 +116,6 @@ function formValidate() {
             type: {
                 required: "Veuillez sélectionner un type.",
             },
-            images: {
-                required: "Veuillez ajouter au moins une image.",
-            },
         },
 
         errorElement: "div",
@@ -144,7 +136,7 @@ function formValidate() {
         // submitHandler
         submitHandler: function (form) {
             let form_element = $(form);
-            let data = form_element.serialize();
+            let data = new FormData(form);
             //AJAX STORE BIEN
             storeBien(form_element, data);
         },
@@ -153,12 +145,11 @@ function formValidate() {
 
 //AJAX STORE BIEN
 function storeBien(form_element, data) {
-    // METHOD
-    let method = form_element.attr("method");
+    let method = "POST";
     let hiddenMethod = form_element.find('input[name="_method"]').val();
 
     if (hiddenMethod) {
-        method = hiddenMethod;
+        data.append("_method", hiddenMethod);
     }
 
     // AJAX
@@ -169,6 +160,8 @@ function storeBien(form_element, data) {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
         data: data,
+        contentType: false, // IMPORTANT
+        processData: false, // IMPORTANT
 
         beforeSend: function () {
             $("#btn_save")
@@ -254,9 +247,55 @@ function deleteBien(e) {
     );
 }
 
+// AJAX DELETE IMAGE
+
+function deleteImage(e) {
+    e.preventDefault();
+
+    let button = $(e.currentTarget);
+    let id_image = button.data("id");
+
+    if (!id_image) {
+        Notyf("error", "Impossible de retirer cette image");
+        return;
+    }
+
+    let imageItem = button.closest(".image-item");
+    button.prop("disabled", true);
+
+    $.ajax({
+        url: "/admin/image/" + id_image,
+        method: "POST",
+        data: {
+            _method: "DELETE",
+        },
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+
+        success: function (response) {
+            if (response.status) {
+                notify("success", response.message);
+                imageItem.fadeOut(200, function () {
+                    $(this).remove();
+                });
+            } else {
+                button.prop("disabled", false);
+            }
+        },
+
+        error: function () {
+            notify("error", "Impossible de retirer cette image");
+            button.prop("disabled", false);
+        },
+    });
+}
+
 export function bienHandler() {
     // Form validation
     formValidate();
     // DELETE BIEN
     $(document).on("click", ".btn_delete_option", deleteBien);
+    // DELETE IMAGE BIEN
+    $(document).on("click", ".btn-delete-image", deleteImage);
 }

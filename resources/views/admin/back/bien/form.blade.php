@@ -157,7 +157,16 @@
                         <label for="images">Ajouter des images</label>
                         <input type="file" name="images[]" id="images" class="form-control-file" multiple>
                     </div>
-                    <div id="preview_images" class="mt-3"></div>
+
+                    <div id="preview_images" class="image-grid mt-3">
+                        @foreach ($bien->images as $image)
+                            <div class="image-item" data-id="{{ $image->id }}">
+                                <img src="{{ $image->getImageUrl() }}" id="image">
+                                <button type="button" class="btn-delete-image d-flex align-items-center justify-content-center"
+                                    data-id="{{ $image->id }}">&times;</button>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
 

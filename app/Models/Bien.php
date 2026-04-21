@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\BienStatus;
 use App\Enums\BienType;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Bien extends Model
 {
@@ -64,6 +65,35 @@ class Bien extends Model
     public function options()
     {
         return $this->belongsToMany(Option::class);
+    }
+
+    /**
+     * 
+     * Un bien peut avoir 1 ou plusieurs image
+     * 
+     * @return HasMany
+     */
+    public function images()
+    {
+        return $this->hasMany(Image::class);
+    }
+
+    public function attachFiles(array $files)
+    {
+        $pictures = [];
+
+        foreach ($files as $file) {
+            if ($file->getError()) {
+                continue;
+            }
+            $pathname = $file->store('biens/' . $this->id, 'public');
+            $pictures[] = [
+                "path" => $pathname
+            ];
+        }
+        if (count($pictures) > 0) {
+            $this->images()->createMany($pictures);
+        }
     }
 
 }

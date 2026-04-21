@@ -58,6 +58,51 @@
         .ts-control {
             background-color: #fff;
         }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            /* 2 colonnes */
+            gap: 8px;
+        }
+
+        .image-item {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            /* carré */
+            overflow: hidden;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        .image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* crop propre */
+        }
+
+        .image-item {
+            position: relative;
+        }
+
+        .btn-delete-image {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(255, 0, 0, 0.8);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-delete-image:hover {
+            background: red;
+        }
     </style>
 </head>
 

@@ -56,10 +56,14 @@ class BienController extends Controller
         $data = $request->validated();
 
         $options = $data['options'] ?? [];
+        $images = $data['images'] ?? [];
+
         unset($data['options']);
+        unset($data['images']);
 
         $bien = Bien::create($data);
         $bien->options()->sync($options);
+        $bien->attachFiles($images);
 
         return response()->json([
             'status' => true,
@@ -105,11 +109,15 @@ class BienController extends Controller
 
         $data = $request->validated();
         $options = $data['options'] ?? [];
+        $images = $data['images'] ?? [];
+
         unset($data['options']);
+        unset($data['images']);
 
         try {
             $bien->update($data);
             $bien->options()->sync($options);
+            $bien->attachFiles($images);
 
             return response()->json([
                 'status' => true,

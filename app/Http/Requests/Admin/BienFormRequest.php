@@ -46,12 +46,11 @@ class BienFormRequest extends FormRequest
             'statut' => ['required', Rule::enum(BienStatus::class)],
             'type' => ['required', Rule::enum(BienType::class)],
             'options' => ['nullable', 'exists:options,id'],
-            'images' => ['array', 'min:1'],
+            'images' => ['nullable', 'array'],
             'images.*' => [
-                'required',
                 'image',
                 'mimes:jpg,jpeg,png,webp',
-                'max:2048',
+                'max:2000',
             ],
         ];
     }
